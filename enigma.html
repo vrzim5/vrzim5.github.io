@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enigmas</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      color: white;
+      overflow: hidden;
+    }
+
+    #background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    #enigma {
+      font-size: 20px;
+      margin-top: 50px;
+    }
+
+    #resultado {
+      font-weight: bold;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div id="background"></div>
+  <div id="enigma">
+    <p id="pergunta"></p>
+    <input type="text" id="palpite" placeholder="Digite sua resposta">
+    <button onclick="verificarPalpite()">Verificar</button>
+  </div>
+
+  <div id="resultado"></div>
+
+  <script>
+    var perguntas = [
+      { pergunta: "Qual é a flor favorita do Bruninho?", resposta: "tulipa azul", imagem: "https://cdn.discordapp.com/attachments/1116495157253120061/1170527125846110258/image.png?ex=656bd256&is=65595d56&hm=557ec4f16c33b32f6b6a7f0d5f0bd98a91adeb0b6d6294ea925c0c7684b567ed&" },
+      { pergunta: "Qual é o maior planeta do nosso sistema solar?", resposta: "jupiter", imagem: "https://cdn.discordapp.com/attachments/1116495157253120061/1170527125846110258/image.png?ex=656bd256&is=65595d56&hm=557ec4f16c33b32f6b6a7f0d5f0bd98a91adeb0b6d6294ea925c0c7684b567ed&" }, 
+      { pergunta: "Bruninho é um ovo de?", resposta: "dragão", imagem: "https://cdn.discordapp.com/attachments/1116495157253120061/1170527125846110258/image.png?ex=656bd256&is=65595d56&hm=557ec4f16c33b32f6b6a7f0d5f0bd98a91adeb0b6d6294ea925c0c7684b567ed&" },
+      { pergunta: "Quem é o pai do Bruninho 'biologicamente' ", resposta: "hades", imagem: "https://cdn.discordapp.com/attachments/1116495157253120061/1170527125846110258/image.png?ex=656bd256&is=65595d56&hm=557ec4f16c33b32f6b6a7f0d5f0bd98a91adeb0b6d6294ea925c0c7684b567ed&" },
+      { pergunta: "Qual é o pai atual do Bruninho?", resposta: "angelo", imagem: "https://cdn.discordapp.com/attachments/1116495157253120061/1170527125846110258/image.png?ex=656bd256&is=65595d56&hm=557ec4f16c33b32f6b6a7f0d5f0bd98a91adeb0b6d6294ea925c0c7684b567ed&" },
+      { pergunta: "Pai?", resposta: "bruno?", imagem: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3N//AABEIAJQBDgMBIgACEQEDEQH/xAAXAAEBAQEAAAAAAAAAAAAAAAAAAQIH/8QAGRABAQEBAQEAAAAAAAAAAAAAAAESAhEx/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAH/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwDh4AKiiiCoiEWoAECAtIACUAVBQQUAQAVAAUARaIoRaggRUAKoAlXlF5ABFUFRECKgKkUUSkWogqUAVBQQVAAFFARRAVFAQRQUABUFRBYgogsRYogggogCiAqiCioAgsQQUEUFQBRAFBAAUEABRAFEEABQWIALyLARAAAAAQAAABQABUFAFQQVFQVPDwUARBUBQBUAIgC1AAAF5ReQQPAUAEAAAFAAABAAUAAFQQUQVRUEQVAFEACAC0iAFAAXlF5BABQVBAFFQAQIEFVFQQFQABQAQPBUAABUVBQAQAABQQ8VPVBefqLz9QQVFFBEAAAUBAAUAEAAVAAVAURQQVFFEVBAFAVEBUWKoioIqxFgIIoAiooIogAohFRBRFBFEVVEVEBFAEAFEUVAQVICiiLAARFUQEVYyvKiAIAKAIAqKUBKKoixFiKJVQAAQAABVEAAAQUQAAAAgKCApEXlRcwzFEEzF8gAmYZiiqmYuYCImYZiiqmYZigJmemZ6oiGYmYoCZhmKKJmL5ABMwzFATMMxRBMwzFAMxMxQEzFzAAzEzFATMa55gCv/9k=" },
+      { pergunta: "Qual desenho serviu de inspiração para o Design do Bruh", resposta: "sos fada manu", imagem: "https://cdn.discordapp.com/attachments/1116495157253120061/1170527125846110258/image.png?ex=656bd256&is=65595d56&hm=557ec4f16c33b32f6b6a7f0d5f0bd98a91adeb0b6d6294ea925c0c7684b567ed&" },
+      { pergunta: "Tá escuro aqui pai, eu tenho medo...", resposta: "bruno?", imagem: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3N//AABEIAJQBDgMBIgACEQEDEQH/xAAXAAEBAQEAAAAAAAAAAAAAAAAAAQIH/8QAGRABAQEBAQEAAAAAAAAAAAAAAAESAhEx/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAH/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwDh4AKiiiCoiEWoAECAtIACUAVBQQUAQAVAAUARaIoRaggRUAKoAlXlF5ABFUFRECKgKkUUSkWogqUAVBQQVAAFFARRAVFAQRQUABUFRBYgogsRYogggogCiAqiCioAgsQQUEUFQBRAFBAAUEABRAFEEABQWIALyLARAAAAAQAAABQABUFAFQQVFQVPDwUARBUBQBUAIgC1AAAF5ReQQPAUAEAAAFAAABAAUAAFQQUQVRUEQVAFEACAC0iAFAAXlF5BABQVBAFFQAQIEFVFQQFQABQAQPBUAABUVBQAQAABQQ8VPVBefqLz9QQVFFBEAAAUBAAUAEAAVAAVAURQQVFFEVBAFAVEBUWKoioIqxFgIIoAiooIogAohFRBRFBFEVVEVEBFAEAFEUVAQVICiiLAARFUQEVYyvKiAIAKAIAqKUBKKoixFiKJVQAAQAABVEAAAQUQAAAAgKCApEXlRcwzFEEzF8gAmYZiiqmYuYCImYZiiqmYZigJmemZ6oiGYmYoCZhmKKJmL5ABMwzFATMMxRBMwzFAMxMxQEzFzAAzEzFATMa55gCv/9k=" },
+      { pergunta: "Qual cidade o vr é?", resposta: "recife", imagem: "https://cdn.discordapp.com/attachments/1116495157253120061/1170527125846110258/image.png?ex=656bd256&is=65595d56&hm=557ec4f16c33b32f6b6a7f0d5f0bd98a91adeb0b6d6294ea925c0c7684b567ed&" },
+      { pergunta: "Venha até mim pai", resposta: "ja vou", imagem: "https://cdn.discordapp.com/attachments/1136321009465700473/1179254654845071443/image.png?ex=65791d7b&is=6566a87b&hm=645b395d8c02472e9889b7ea32c73bf807baf1cd769debddfdc656d24bda2406&" },
+
+      // Adicione mais perguntas conforme necessário
+    ];
+
+    var indicePerguntaAtual = 0;
+
+    function exibirPergunta() {
+      var perguntaElement = document.getElementById("pergunta");
+      if (indicePerguntaAtual < perguntas.length) {
+        perguntaElement.textContent = perguntas[indicePerguntaAtual].pergunta;
+
+        var backgroundElement = document.getElementById("background");
+        backgroundElement.style.backgroundImage = "url('" + perguntas[indicePerguntaAtual].imagem + "')";
+      } else {
+        perguntaElement.innerHTML = "<h1>Parabéns! Você concluiu todas as perguntas.</h1>";
+      }
+    }
+
+    function verificarPalpite() {
+      if (indicePerguntaAtual < perguntas.length) {
+        var respostaCorreta = perguntas[indicePerguntaAtual].resposta;
+        var palpiteUsuario = document.getElementById("palpite").value.toLowerCase();
+
+        if (palpiteUsuario === respostaCorreta) {
+          exibirResultado(true, "Parabéns! Você acertou.");
+          proximaPergunta();
+        } else {
+          exibirResultado(false, "Ops! Tente novamente.");
+        }
+      }
+    }
+
+    function exibirResultado(acertou, mensagem) {
+      var resultadoElement = document.getElementById("resultado");
+      resultadoElement.style.color = acertou ? "green" : "red";
+      resultadoElement.textContent = mensagem;
+    }
+
+    function proximaPergunta() {
+      indicePerguntaAtual++;
+      exibirPergunta();
+    }
+
+    // Inicializa o primeiro enigma
+    exibirPergunta();
+  </script>
+</body>
+</html>
